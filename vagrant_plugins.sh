@@ -1,2 +1,2 @@
-vagrant plugin install -i vagrant-hostmanager
-vagrant plugin install -i vagrant-vbguest
+vagrant plugin install vagrant-hostmanager
+vagrant plugin install vagrant-vbguest

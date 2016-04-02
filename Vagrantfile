@@ -1,44 +1,38 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
-node_config = (JSON.parse(File.read("nodes.json")))['node']
+require 'json'
+
+nodes = (JSON.parse(File.read("nodes.json")))['nodes']
 
 VAGRANT_VERSION = "2"
 Vagrant.configure(VAGRANT_VERSION) do |config|
-  #config.vm.box = "centos/7" # Setuping the version of centos that will running on vm.
-  config.vm.box = "geerlingguy/centos7"
+  config.vm.box = 'geerlingguy/centos7'
 
-  node_config.each do |node|
-    node_name   = node[0]
-    node_values = node[1]
+  nodes.each do |node|
+    node_name   = node.first
+    node_values = node.last
 
+    config.hostmanager.enabled = true
+    config.hostmanager.manage_host = true
+    config.hostmanager.ignore_private_ip = false
+    config.hostmanager.include_offline = true
 
-  end
+    config.vm.define node_name do |config|
+      config.vm.hostname = node_name
+      config.vm.network :private_network, ip: node_values[':ip']
+      config.vm.provider :virtualbox do |vb|
+        vb.customize ["modifyvm", :id, "--memory", node_values[':memory']]
+        vb.customize ["modifyvm", :id, "--name", node_name]
+      end
 
+      ports = node_values['ports']
+      ports.each do |port|
+        config.vm.network :forwarded_port,
+          guest: port['guest'], host: port['host'], id: port['id']
+      end
 
-
-  config.vm.define :theforeman do |node|
-    node.vm.hostname = "theforeman"
-    node.vm.provision :shell, path: "foreman.sh"
-    node.vm.network :private_network, ip: "192.168.10.33"
-    node.vm.network :forwarded_port, guest: 80, host: 8080
-  end
-
-  config.vm.define :agent1 do |node|
-    node.vm.hostname = "agent1"
-    node.vm.network :private_network, ip: "192.168.10.35"
-    node.vm.provision :puppet do |puppet|
-      puppet.manifests_path = "manifests"
-      puppet.manifest_file = "default.pp"
-    end
-  end
-
-  config.vm.define :agent2 do |node|
-    node.vm.hostname = "agent2"
-    node.vm.network :private_network, ip: "192.168.10.37"
-    node.vm.provision :puppet do |puppet|
-      puppet.manifests_path = "manifests"
-      puppet.manifest_file = "default.pp"
+      config.vm.provision :shell, path: node_values[':bootstrap']
     end
   end
 end
