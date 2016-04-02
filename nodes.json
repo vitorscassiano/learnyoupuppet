@@ -7,14 +7,14 @@
       ":box": "geerlingguy/centos7",
       ":bootstrap": "theforeman.sh"
     },
-    "agent1.com": {
+    "agent1.office": {
       ":ip": "192.168.10.32",
       "ports": [],
       ":memory": "1024",
       ":box": "geerlingguy/centos7",
       ":bootstrap": "agent.sh"
     },
-    "agent2.com": {
+    "agent2.office": {
       ":ip": "192.168.10.34",
       "ports": [],
       ":memory": "1024",
