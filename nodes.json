@@ -1,0 +1,25 @@
+{
+  "nodes":{
+    "theforeman.srv.office": {
+      ":ip": "192.168.10.30",
+      "ports": [],
+      ":memory": "1024",
+      ":box": "geerlingguy/centos7",
+      ":bootstrap": "theforeman.sh"
+    },
+    "agent1.srv.office": {
+      ":ip": "192.168.10.32",
+      "ports": [],
+      ":memory": "1024",
+      ":box": "geerlingguy/centos7",
+      ":bootstrap": "agent.sh"
+    },
+    "agent2.srv.office": {
+      ":ip": "192.168.10.34",
+      "ports": [],
+      ":memory": "1024",
+      ":box": "geerlingguy/centos7",
+      ":bootstrap": "agent.sh"
+    }
+  }
+}
